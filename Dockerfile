@@ -1,13 +1,18 @@
-FROM java:8
-MAINTAINER Shao (armv7/armhf-java8) java:8
-ADD /target/spring-boot-docker.jar boot.jar
-ADD /src/main/resources/application-docker.properties application.properties
-ENV env QAZWSX
-EXPOSE 8030
-ENTRYPOINT ["java","-jar","-Xms100m","-Xmx100m","boot.jar","--spring.config.location=application.properties"]
-# 只能新增挂载点 不能映射到外部宿主机
-VOLUME ["/tmp"]
+FROM maven:3.6.1-jdk-8
+MAINTAINER shishaodong
+ADD pom.xml /tmp/build/
+RUN cd /tmp/build && mvn -q dependency:resolve
 
+ADD src /tmp/build/src
+        #构建应用
+RUN cd /tmp/build && mvn -q -DskipTests=true package \
+        #拷贝编译结果到指定目录
+        && mv target/*.jar /app.jar \
+        #清理编译痕迹
+        && cd / && rm -rf /tmp/build
+VOLUME /tmp
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/app.jar"]
 
 
 
