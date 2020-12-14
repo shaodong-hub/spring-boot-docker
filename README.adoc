@@ -8,7 +8,7 @@ IDEA 快速部署 SpringBoot 到 Docker
 三.IDEA 设置
 安装Docker插件, 现在一般IDEA 都会默认安装
 
-
+docker build  -t spring-boot-docker/snap .
 
 
 
